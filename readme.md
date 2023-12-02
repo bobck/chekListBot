@@ -32,7 +32,3 @@ fix "...r" to "...r.items"`
 `pm2 save`
 `pm2 startup`
 
-8. Save current trip plan
-
-`npm run update_plan`
-
