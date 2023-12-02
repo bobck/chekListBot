@@ -1,0 +1,10 @@
+.env
+node_modules/
+credentials.json
+package-lock.json
+telegraf-sessions.sqlite
+token.json
+.DS_Store
+scr/.DS_Store
+scr/telegram/.DS_Store
+main.db

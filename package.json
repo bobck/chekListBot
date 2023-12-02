@@ -1,0 +1,46 @@
+{
+  "name": "checklistbot",
+  "version": "1.0.0",
+  "description": "Mounthly car cheklist. Upload files from telegram to google drive. Show birtix list response to telegram user.",
+  "main": "app.mjs",
+  "scripts": {
+    "createToken": "node createToken.js",
+    "up": "ENV=up node -r dotenv/config migrator.mjs",
+    "down": "ENV=down node -r dotenv/config migrator.mjs",
+    "test": "ENV=test node -r dotenv/config app.mjs",
+    "devdrive": "ENV=dev node -r dotenv/config scr/drive/drive.utils.mjs",
+    "devbq": "ENV=dev node -r dotenv/config scr/bq/bq.utils.mjs",
+    "devbitrix": "ENV=dev node -r dotenv/config scr/bitrix/bitrix.utils.mjs",
+    "refreshcars": "ENV=dev node -r dotenv/config scr/bitrix/modules/refresh-сar-list.mjs"
+  },
+  "keywords": [
+    "talegram",
+    "google-drive",
+    "drive",
+    "bitrix"
+  ],
+  "author": "bobckx10@gmail.com",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "dependencies": {
+    "@2bad/bitrix": "^2.5.1",
+    "@google-cloud/bigquery": "^7.3.0",
+    "@google-cloud/local-auth": "^2.1.0",
+    "@googleapis/drive": "^8.4.0",
+    "@telegraf/session": "^2.0.0-beta.6",
+    "better-sqlite3": "^8.7.0",
+    "cron": "^3.1.6",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "fs": "^0.0.1-security",
+    "got": "^14.0.0",
+    "https": "^1.0.0",
+    "kysely": "^0.23.5",
+    "path": "^0.12.7",
+    "process": "^0.11.10",
+    "telegraf": "^4.15.0",
+    "uuid": "^9.0.1"
+  }
+}
