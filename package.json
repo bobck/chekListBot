@@ -11,7 +11,7 @@
     "devdrive": "ENV=dev node -r dotenv/config scr/drive/drive.utils.mjs",
     "devbq": "ENV=dev node -r dotenv/config scr/bq/bq.utils.mjs",
     "devbitrix": "ENV=dev node -r dotenv/config scr/bitrix/bitrix.utils.mjs",
-    "refreshcars": "ENV=dev node -r dotenv/config scr/bitrix/modules/refresh-сar-list.mjs"
+    "refreshcars": "ENV=dev node -r dotenv/config scr/bitrix/modules/refresh-car-list.mjs"
   },
   "keywords": [
     "talegram",
