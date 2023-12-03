@@ -1,6 +1,7 @@
+import fs from 'fs'
+import path from "path";
 import { setTimeout as setTimeoutP } from "timers/promises";
-
-import { Scenes, Markup } from "telegraf";
+import { Scenes } from "telegraf";
 import { message } from "telegraf/filters";
 import { onReset } from "../middleware/middleware.commands.mjs";
 import { uploadPhotoToDrive } from "../modules/upload-photo-to-drive-from-telegram.mjs";
@@ -11,7 +12,13 @@ export const sceneCarVis = new Scenes.WizardScene(
     'CAR_VIS_SCENE',
     async (ctx) => {
         await ctx.sendChatAction('typing');
-        await ctx.replyWithPhoto({ source: 'pics/1.jpg' }, { caption: ua.askPhotoText });
+        await ctx.replyWithPhoto(
+            {
+                source: fs.createReadStream(path.join(process.cwd(), 'pics/1.jpg'))
+            },
+            {
+                caption: ua.askPhotoText
+            });
         return ctx.wizard.next();
     },
     async (ctx) => {
@@ -30,8 +37,14 @@ export const sceneCarVis = new Scenes.WizardScene(
         if (ctx.session.carvis.steps_loaded[current_cursor + 1]) {
             return
         }
-        ctx.replyWithPhoto({ source: 'pics/2.jpg' }, { caption: ua.askPhotoText });
 
+        await ctx.replyWithPhoto(
+            {
+                source: fs.createReadStream(path.join(process.cwd(), 'pics/2.jpg'))
+            },
+            {
+                caption: ua.askPhotoText
+            });
     },
     async (ctx) => {
         const current_cursor = ctx.wizard.cursor
@@ -52,8 +65,13 @@ export const sceneCarVis = new Scenes.WizardScene(
             return
         }
 
-        ctx.replyWithPhoto({ source: 'pics/3.jpg' }, { caption: ua.askPhotoText });
-
+        await ctx.replyWithPhoto(
+            {
+                source: fs.createReadStream(path.join(process.cwd(), 'pics/3.jpg'))
+            },
+            {
+                caption: ua.askPhotoText
+            });
     },
     async (ctx) => {
         const current_cursor = ctx.wizard.cursor
@@ -72,7 +90,13 @@ export const sceneCarVis = new Scenes.WizardScene(
         if (ctx.session.carvis.steps_loaded[current_cursor + 1]) {
             return
         }
-        ctx.replyWithPhoto({ source: 'pics/4.jpg' }, { caption: ua.askPhotoText });
+        await ctx.replyWithPhoto(
+            {
+                source: fs.createReadStream(path.join(process.cwd(), 'pics/4.jpg'))
+            },
+            {
+                caption: ua.askPhotoText
+            });
     },
     async (ctx) => {
         const current_cursor = ctx.wizard.cursor
@@ -90,7 +114,13 @@ export const sceneCarVis = new Scenes.WizardScene(
         if (ctx.session.carvis.steps_loaded[current_cursor + 1]) {
             return
         }
-        ctx.replyWithPhoto({ source: 'pics/5.jpg' }, { caption: ua.askPhotoText });
+        await ctx.replyWithPhoto(
+            {
+                source: fs.createReadStream(path.join(process.cwd(), 'pics/5.jpg'))
+            },
+            {
+                caption: ua.askPhotoText
+            });
     },
     async (ctx) => {
         const current_cursor = ctx.wizard.cursor
@@ -108,7 +138,13 @@ export const sceneCarVis = new Scenes.WizardScene(
         if (ctx.session.carvis.steps_loaded[current_cursor + 1]) {
             return
         }
-        ctx.replyWithPhoto({ source: 'pics/6.jpg' }, { caption: ua.askPhotoText });
+        await ctx.replyWithPhoto(
+            {
+                source: fs.createReadStream(path.join(process.cwd(), 'pics/6.jpg'))
+            },
+            {
+                caption: ua.askPhotoText
+            });
     },
     async (ctx) => {
         const current_cursor = ctx.wizard.cursor
@@ -126,7 +162,13 @@ export const sceneCarVis = new Scenes.WizardScene(
         if (ctx.session.carvis.steps_loaded[current_cursor + 1]) {
             return
         }
-        ctx.replyWithPhoto({ source: 'pics/7.jpg' }, { caption: ua.askPhotoText });
+        await ctx.replyWithPhoto(
+            {
+                source: fs.createReadStream(path.join(process.cwd(), 'pics/7.jpg'))
+            },
+            {
+                caption: ua.askPhotoText
+            });
     },
     async (ctx) => {
         const current_cursor = ctx.wizard.cursor
@@ -144,7 +186,13 @@ export const sceneCarVis = new Scenes.WizardScene(
         if (ctx.session.carvis.steps_loaded[current_cursor + 1]) {
             return
         }
-        ctx.replyWithPhoto({ source: 'pics/8.jpg' }, { caption: ua.askPhotoText });
+        await ctx.replyWithPhoto(
+            {
+                source: fs.createReadStream(path.join(process.cwd(), 'pics/8.jpg'))
+            },
+            {
+                caption: ua.askPhotoText
+            });
     },
     async (ctx) => {
         const current_cursor = ctx.wizard.cursor
@@ -162,7 +210,13 @@ export const sceneCarVis = new Scenes.WizardScene(
         if (ctx.session.carvis.steps_loaded[current_cursor + 1]) {
             return
         }
-        ctx.replyWithPhoto({ source: 'pics/9.jpg' }, { caption: ua.askPhotoText });
+        await ctx.replyWithPhoto(
+            {
+                source: fs.createReadStream(path.join(process.cwd(), 'pics/9.jpg'))
+            },
+            {
+                caption: ua.askPhotoText
+            });
     },
     async (ctx) => {
         const current_cursor = ctx.wizard.cursor

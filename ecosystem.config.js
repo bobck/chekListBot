@@ -1,8 +1,11 @@
 module.exports = {
     apps: [{
         name: "chekListBot",
-        script: "app.mjs",
+        script: "./app.mjs",
         watch: false,
-        node_args: 'ENV=prod -r dotenv/config'
+        node_args: '-r dotenv/config',
+        env: {
+            ENV: "prod",
+        }
     }]
 }
