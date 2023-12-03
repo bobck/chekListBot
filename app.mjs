@@ -1,6 +1,4 @@
 import express from "express";
-import fs from 'fs'
-import https from 'https'
 
 import {
     Telegraf,
@@ -43,34 +41,26 @@ const app = express();
     bot.on('chosen_inline_result', carPickResponse);
     bot.on('callback_query', enterCarVisScene);
 
+    bot.command('refresh_cars', async (ctx, next) => {
+        ctx.sendChatAction('typing');
+        const result = await refreshCarlist();
+        ctx.reply(`Refresh with ${result} cars`)
+        console.log({ time: new Date(), result })
+        await next();
+    });
+
     if (process.env.ENV == 'test') {
         bot.command('reset', onReset);
-        bot.command('refresh_cars', async (ctx, next) => {
-            ctx.sendChatAction('typing');
-            const result = await refreshCarlist();
-            ctx.reply(`Refresh with ${result} cars`)
-            console.log({ time: new Date(), result })
-            await next();
-        });
         bot.launch();
         process.once('SIGINT', () => bot.stop('SIGINT'))
         process.once('SIGTERM', () => bot.stop('SIGTERM'))
     }
 
     if (process.env.ENV == 'prod') {
-        app.use(await bot.createWebhook({ domain: process.env.HOST }));
+        app.use(await bot.createWebhook({ domain: process.env.HOST, path: process.env.HOST_PATH }));
 
-        const options = {
-            key: fs.readFileSync('./private.key.pem'),
-            cert: fs.readFileSync('./domain.cert.pem'),
-        };
-
-        const server = https.createServer(options, app).listen(process.env.PORT, function () {
-            console.log("Express server listening on port " + process.env.PORT);
-        });
-
-        app.get('/', function (req, res) {
-            res.end("Hi from cheklistBot");
+        app.listen(process.env.PORT, () => {
+            console.log(`Cheklistbot listen at ${PORT}`);
         });
     }
 
