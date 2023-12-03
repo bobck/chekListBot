@@ -60,7 +60,7 @@ const app = express();
         app.use(await bot.createWebhook({ domain: process.env.HOST, path: process.env.HOST_PATH }));
 
         app.listen(process.env.PORT, () => {
-            console.log(`Cheklistbot listen at ${PORT}`);
+            console.log(`Cheklistbot listen at ${process.env.PORT}`);
         });
     }
 
