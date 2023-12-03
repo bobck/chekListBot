@@ -137,6 +137,7 @@ async function saveAndLeave(ctx) {
             car_vis_date,
             car_vis_folder_id,
             car_vis_folder_link,
+            status: 'done',
             created_by_id,
             created_by_name,
             created_at,
