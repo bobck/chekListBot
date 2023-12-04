@@ -2,8 +2,8 @@ import fs from 'fs'
 import path from "path";
 import { setTimeout as setTimeoutP } from "timers/promises";
 import { Scenes } from "telegraf";
-import { message } from "telegraf/filters";
-import { onReset } from "../middleware/middleware.commands.mjs";
+import { message, callbackQuery } from "telegraf/filters";
+import { onReset, forceStop, onForceStop } from "../middleware/middleware.commands.mjs";
 import { uploadPhotoToDrive } from "../modules/upload-photo-to-drive-from-telegram.mjs";
 import { translate } from "../telegram.translate.mjs";
 const { ua } = translate
@@ -11,6 +11,7 @@ const { ua } = translate
 export const sceneCarVis = new Scenes.WizardScene(
     'CAR_VIS_SCENE',
     async (ctx) => {
+
         await ctx.sendChatAction('typing');
         await ctx.replyWithPhoto(
             {
@@ -23,9 +24,7 @@ export const sceneCarVis = new Scenes.WizardScene(
     },
     async (ctx) => {
         const current_cursor = ctx.wizard.cursor
-
         ctx.wizard.next();
-
         await uploadPhotoToDrive(
             {
                 ctx,
@@ -249,14 +248,17 @@ export const sceneCarVis = new Scenes.WizardScene(
 
 )
 
+sceneCarVis.command('close', onForceStop);
 
 if (process.env.ENV == 'test') {
     sceneCarVis.command('reset', onReset);
 }
 
-
-
 sceneCarVis.use((ctx, next) => {
+
+    if (ctx.has(callbackQuery('data'))) {
+        return forceStop(ctx, next);
+    }
 
     if (!ctx.session.carvis.steps_loaded) {
         ctx.session.carvis.steps_loaded = {}
