@@ -38,7 +38,7 @@ export async function enterCarVisScene(ctx, next) {
     ctx.session.carvis.car_vis_date = carDate;
     ctx.session.carvis.created_by_id = from.id
     ctx.session.carvis.created_by_name = from.first_name
-    ctx.session.carvis.created_at = new Date()
+    ctx.session.carvis.created_at = new Date().toISOString();
 
     const carFolderId = await getFolderIdByParentIdAndName({ name: car_num, parentId: process.env.CAR_VIS_FOLDER_ID });
     ctx.session.carvis.car_folder_id = carFolderId
