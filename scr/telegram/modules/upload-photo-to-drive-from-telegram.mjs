@@ -15,18 +15,21 @@ export async function uploadPhotoToDrive({ ctx, photo_name, file_id, current_cur
 
     const streamOptions = {
         retry: {
-            limit: 6, 
+            limit: 6,
             methods: ['GET'],
             statusCodes: [408, 413, 429, 500, 502, 503, 504],
             errorCodes: ['ETIMEDOUT', 'ECONNRESET', 'EADDRINUSE', 'ECONNREFUSED', 'EPIPE', 'ENOTFOUND', 'ENETUNREACH', 'EAI_AGAIN'],
             calculateDelay: ({ attemptCount, retryOptions, error, computedValue }) => {
-                console.log({ function: 'uploadPhotoToDrive', attemptCount, error })
                 return Math.min(computedValue * 2, retryOptions.maxRetryAfter || Infinity);
             }
         }
     };
-    
-    const createReadStream = await got.stream(href, streamOptions);
+
+    const createReadStream = await got.stream(href, streamOptions).on('retry', (attempt, error, retryCount) => {
+        console.log(`Attempt: ${attempt}, Retry Count: ${retryCount}, Error: ${error.message}`);
+        console.log({ error });
+
+    });;
 
     const { car_num, car_vis_folder_id } = ctx.session.carvis
 
