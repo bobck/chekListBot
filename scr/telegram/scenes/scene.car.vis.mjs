@@ -240,6 +240,7 @@ export const sceneCarVis = new Scenes.WizardScene(
                 ctx.reply(ua.groupSavingError)
                 console.error({ type: 'groupSavingError', ctx, carvis: ctx.session.carvis.steps_loaded })
                 ctx.scene.leave()
+                return;
             }
         }
         await ctx.sendChatAction('typing');

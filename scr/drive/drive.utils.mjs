@@ -52,20 +52,31 @@ export async function createFolderInParentFolder({ name, parentId }) {
 }
 
 export async function uploadFileToParentId({ createReadStream, name, parentId }) {
+    const maxRetries = 3; 
+    const retryInterval = 1500;
 
-    const file = await client.files.create({
-        media: {
-            body: createReadStream
-        },
-        fields: 'id',
-        requestBody: {
-            name,
-            parents: [parentId]
-        },
-
-    });
-    return file.data.id;
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+        try {
+            const file = await client.files.create({
+                media: {
+                    body: createReadStream
+                },
+                fields: 'id',
+                requestBody: {
+                    name,
+                    parents: [parentId]
+                },
+            });
+            return file.data.id;
+        } catch (error) {
+            if (attempt === maxRetries - 1) {
+                throw error; // Переброшенная ошибка, если все попытки неудачны
+            }
+            await new Promise(resolve => setTimeout(resolve, retryInterval)); // Задержка перед следующей попыткой
+        }
+    }
 }
+
 
 
 if (process.env.ENV == 'dev') {

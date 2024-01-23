@@ -15,7 +15,7 @@ export async function uploadPhotoToDrive({ ctx, photo_name, file_id, current_cur
 
     const streamOptions = {
         retry: {
-            limit: 6,
+            limit: 7,
             methods: ['GET'],
             statusCodes: [408, 413, 429, 500, 502, 503, 504],
             errorCodes: ['ETIMEDOUT', 'ECONNRESET', 'EADDRINUSE', 'ECONNREFUSED', 'EPIPE', 'ENOTFOUND', 'ENETUNREACH', 'EAI_AGAIN'],

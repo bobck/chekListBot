@@ -4,6 +4,8 @@ const process = require('process');
 const { authenticate } = require('@google-cloud/local-auth');
 const { auth } = require('@googleapis/drive');
 
+//TODO:
+//https://developers.google.com/identity/protocols/oauth2/web-server?hl=ru#node.js_1
 
 // If modifying these scopes, delete token.json.
 const SCOPES = [
