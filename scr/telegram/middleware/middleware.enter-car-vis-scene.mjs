@@ -4,6 +4,9 @@ import {
     getFolderIdByParentIdAndName,
     createFolderInParentFolder
 } from '../../drive/drive.utils.mjs';
+import { db } from "../../database.mjs"
+import { carMillegeByMaponIdOrOlateNumber } from '../../mapon/mapon.utils.mjs';
+import { daysWithNoMileageByCarId } from '../../bq/bq.utils.mjs'
 
 import { translate } from '../telegram.translate.mjs';
 const { ua } = translate
@@ -25,13 +28,35 @@ export async function enterCarVisScene(ctx, next) {
     }
     await ctx.sendChatAction('typing');
 
-    await ctx.reply(ua.waiting_preparing)
+    const [carRow] = await db
+        .selectFrom('cars')
+        .select('mapon_id')
+        .where('id', '=', id)
+        .execute()
+    const { mapon_id } = carRow
 
     await ctx.sendChatAction('typing');
     const [carDate, carVisFolderName] = new Date().toISOString().split('T');
 
     ctx.session = {}
     ctx.session.carvis = {}
+
+    await daysWithNoMileageCheck({ ctx, id });
+
+    try {
+        const { result, unit } = await carMillegeByMaponIdOrOlateNumber({ maponId: mapon_id, plateNumber: car_num })
+
+        if (result) {
+            const { mileage } = unit
+            ctx.session.carvis.mapon_mileage = Math.round(parseInt(mileage) / 1000)
+        }
+
+    } catch (error) {
+        console.error({ type: 'carMillegeByMaponIdOrOlateNumber', callback_query_data, error })
+    }
+
+    await ctx.reply(ua.waiting_preparing)
+
     ctx.session.carvis.id = uuidv4();
     ctx.session.carvis.car_id = id
     ctx.session.carvis.car_num = car_num
@@ -57,7 +82,34 @@ export async function enterCarVisScene(ctx, next) {
     ctx.session.carvis.car_vis_folder_link = `https://drive.google.com/drive/folders/${ctx.session.carvis.car_vis_folder_id}`
 
     await ctx.reply(ua.reglament)
+
+    if (ctx.session.mileage_update_require) {
+        await ctx.reply(ua.needOdometrPhoto)
+    }
+
     await ctx.scene.enter('CAR_VIS_SCENE');
     await ctx.answerCbQuery()
     return await next()
+}
+
+async function daysWithNoMileageCheck({ ctx, id }) {
+
+    if (process.env.SKIP_MILEAGE_CHECK == 'YES') {
+        return
+    }
+
+    await ctx.reply(ua.preparing_mileage_info);
+
+    try {
+        const { days_with_no_mileage_update } = await daysWithNoMileageByCarId({ id });
+
+        if (days_with_no_mileage_update == null || days_with_no_mileage_update > parseInt(process.env.DAYS_WITH_NO_MILEAGE_UPDATE_ALLOWED)) {
+            ctx.session.mileage_update_require = true;
+        }
+
+    } catch (error) {
+        console.error({ type: 'daysWithNoMileageByCarId', error })
+        ctx.session.mileage_update_require = true;
+    }
+    return
 }

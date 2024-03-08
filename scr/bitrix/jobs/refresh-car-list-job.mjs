@@ -13,8 +13,7 @@ const job = CronJob.from({
             console.log({ job: 'refreshCarlist', time: new Date() })
             await refreshCarlist();
         } catch (error) {
-            console.error('Error occurred in onTick refreshCarlist');
-            console.error(error);
+            console.error({ type: 'onTick refreshCarlist', error })
         }
     }
 });

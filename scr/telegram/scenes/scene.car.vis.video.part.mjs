@@ -94,6 +94,7 @@ async function saveAndLeave(ctx) {
         id,
         car_id,
         car_num,
+        mapon_mileage,
         car_vis_date,
         created_by_id,
         created_by_name,
@@ -127,6 +128,8 @@ async function saveAndLeave(ctx) {
         photo_8_url,
         photo_9_id,
         photo_9_url,
+        photo_odometr_id,
+        photo_odometr_url,
     } = photos
 
     const row = {
@@ -161,7 +164,10 @@ async function saveAndLeave(ctx) {
         photo_9_url,
         has_video_360,
         video_360_id,
-        video_360_url
+        video_360_url,
+        photo_odometr_id,
+        photo_odometr_url,
+        mapon_mileage
     };
     try {
         await insertRowWithDlm(row)
@@ -177,7 +183,7 @@ async function saveAndLeave(ctx) {
 
 }
 
-if (process.env.ENV == 'dev') {
+if (process.env.ENV == 'test') {
 
     sceneCarVisVideoPart.command('reset', onReset);
 

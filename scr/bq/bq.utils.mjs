@@ -65,13 +65,50 @@ export async function insertRowWithDlm(row) {
 
 }
 
+export async function daysWithNoMileageByCarId({ id }) {
+    const options = {
+        configuration: {
+            query: {
+                query: `SELECT
+          DATE_DIFF(timestamp_add(current_timestamp(), INTERVAL 0 DAY), created_at, DAY) as days_with_no_mileage_update
+        FROM
+        \`${process.env.BQ_PROJECT_NAME}.${process.env.BQ_DATASET_ID}.${process.env.BQ_TABLE_ID}\`
+        WHERE
+        photo_odometr_id IS NOT NULL
+          AND car_id = '${id}'
+          AND is_trash IS NULL
+        ORDER BY
+          created_at DESC
+        LIMIT
+          1`,
+                useLegacySql: false,
+            }
+        },
+    };
+
+    const response = await bigquery.createJob(options);
+    const [job] = response;
+
+    const [rows] = await job.getQueryResults(job);
+
+    if (!rows.length) {
+        return { days_with_no_mileage_update: null }
+    }
+
+    const [row] = rows
+    const { days_with_no_mileage_update } = row
+    return { days_with_no_mileage_update }
+}
+
 
 if (process.env.ENV == 'dev') {
-    const r = {
-        id: '1',
-        status: 'done'
-    }
-    console.log(await insertRowWithDlm(r))
+    // const r = {
+    //     id: '1',
+    //     status: 'done'
+    // }
+    // console.log(await insertRowWithDlm(r))
     // insertRowsAsStream();
+
+    daysWithNoMileageByCarId({ id: '5498' })
 }
 

@@ -6,10 +6,7 @@ export function runBitrixJob() {
     try {
         refreshCarlistJob.start();
     } catch (error) {
-        console.error('sync error, app down...')
-        console.error({ error })
-        console.error('Trying to restart...')
-
+        console.error({ type: 'refreshCarlistJob.start', error })
         refreshCarlistJob.stop();
         runBitrixJob();
     }

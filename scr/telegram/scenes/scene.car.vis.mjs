@@ -216,7 +216,7 @@ export const sceneCarVis = new Scenes.WizardScene(
             {
                 caption: ua.askPhotoText
             });
-    },
+    }, 
     async (ctx) => {
         const current_cursor = ctx.wizard.cursor
 
@@ -226,6 +226,52 @@ export const sceneCarVis = new Scenes.WizardScene(
                 ctx,
                 file_id: ctx.session.file_id,
                 photo_name: 'photo_9',
+                current_cursor
+            })
+
+
+
+        if (ctx.session.mileage_update_require) {
+
+            if (ctx.session.carvis.steps_loaded[current_cursor + 1]) {
+                return
+            }
+
+            await ctx.replyWithPhoto(
+                {
+                    source: fs.createReadStream(path.join(process.cwd(), 'pics/odometr.jpg'))
+                },
+                {
+                    caption: ua.askOdometrPhoto
+                });
+            return
+        }
+
+        let waiting_time = 0;
+
+        while (Object.values(ctx.session.carvis.steps_loaded).includes('in_progress')) {
+            await setTimeoutP(1000);
+            waiting_time++
+            if (waiting_time >= 60) {
+                ctx.reply(ua.groupSavingError)
+                console.error({ type: 'groupSavingError', ctx, carvis: ctx.session.carvis.steps_loaded })
+                ctx.scene.leave()
+                return;
+            }
+        }
+        await ctx.sendChatAction('typing');
+        ctx.scene.enter('CAR_VIS_SCENE_VIDEO_PART');
+
+    },
+    async (ctx) => {
+        const current_cursor = ctx.wizard.cursor
+
+        ctx.wizard.next();
+        await uploadPhotoToDrive(
+            {
+                ctx,
+                file_id: ctx.session.file_id,
+                photo_name: 'photo_odometr',
                 current_cursor
             })
 
