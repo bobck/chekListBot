@@ -47,12 +47,13 @@ export async function createFolderInParentFolder({ name, parentId }) {
             resource: fileMetaData,
         })
         .catch((err) => console.log(err));
+    console.log({ createFolderInParentFolder: result });
     const { data } = result
     return data.id
 }
 
 export async function uploadFileToParentId({ createReadStream, name, parentId }) {
-    const maxRetries = 3; 
+    const maxRetries = 3;
     const retryInterval = 1500;
 
     for (let attempt = 0; attempt < maxRetries; attempt++) {
