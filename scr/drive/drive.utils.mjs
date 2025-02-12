@@ -21,7 +21,9 @@ export async function getFolderIdByParentIdAndName({ name, parentId }) {
         pageSize: 10,
         q: `mimeType = 'application/vnd.google-apps.folder' and name='${name}' and '${parentId}' in parents and trashed = false`,
         fields: `files(id, name)`,
-        spaces: 'drive'
+        spaces: 'drive',
+        supportsAllDrives: true,
+        supportsTeamDrives: true
     });
     const folders = res.data.files;
     if (folders.length === 0) {
@@ -45,6 +47,7 @@ export async function createFolderInParentFolder({ name, parentId }) {
         .create({
             fields: "id",
             resource: fileMetaData,
+            supportsAllDrives: true
         })
         .catch((err) => console.log(err));
     console.log({ createFolderInParentFolder: result });
@@ -67,6 +70,7 @@ export async function uploadFileToParentId({ createReadStream, name, parentId })
                     name,
                     parents: [parentId]
                 },
+                supportsAllDrives: true
             });
             return file.data.id;
         } catch (error) {
