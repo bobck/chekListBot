@@ -28,67 +28,75 @@ export async function enterCarVisScene(ctx, next) {
     }
     await ctx.sendChatAction('typing');
 
-    const [carRow] = await db
-        .selectFrom('cars')
-        .select('mapon_id')
-        .where('id', '=', id)
-        .execute()
-    const { mapon_id } = carRow
-
-    await ctx.sendChatAction('typing');
-    const [carDate, carVisFolderName] = new Date().toISOString().split('T');
-
-    ctx.session = {}
-    ctx.session.carvis = {}
-
-    await daysWithNoMileageCheck({ ctx, id });
-
     try {
-        const { result, unit } = await carMillegeByMaponIdOrOlateNumber({ maponId: mapon_id, plateNumber: car_num })
+        const [carRow] = await db
+            .selectFrom('cars')
+            .select('mapon_id')
+            .where('id', '=', id)
+            .execute()
+        const { mapon_id } = carRow
 
-        if (result) {
-            const { mileage } = unit
-            ctx.session.carvis.mapon_mileage = Math.round(parseInt(mileage) / 1000)
+        const [carDate, carVisFolderName] = new Date().toISOString().split('T');
+
+        ctx.session = {
+                carvis: {
+                    id: uuidv4(),
+                    car_id: id,
+                    car_num,
+                    car_vis_date: carDate,
+                    created_by_id: from.id,
+                    created_by_name: from.first_name,
+                    created_at: new Date().toISOString(),
+                    mapon_mileage: null
+                }
+            };
+        
+        await daysWithNoMileageCheck({ ctx, id });
+
+        try {
+            const { result, unit } = await carMillegeByMaponIdOrOlateNumber({ maponId: mapon_id, plateNumber: car_num })
+
+            if (result) {
+                const { mileage } = unit
+                ctx.session.carvis.mapon_mileage = Math.round(parseInt(mileage) / 1000)
+            }
+
+        } catch (error) {
+            console.error({ type: 'carMillegeByMaponIdOrOlateNumber', callback_query_data, error })
         }
 
+        await ctx.reply(ua.waiting_preparing)
+
+        const rootFolderId = process.env.CAR_VIS_FOLDER_ID;
+
+        const carFolderId = await getOrCreateFolder(car_num, rootFolderId);
+        const carDateFolderId = await getOrCreateFolder(carDate, carFolderId);
+        const carVisFolderId = await getOrCreateFolder(carVisFolderName, carDateFolderId);
+
+        ctx.session.carvis.car_folder_id = carFolderId;
+        ctx.session.carvis.car_date_folder_id = carDateFolderId;
+        ctx.session.carvis.car_vis_folder_id = carVisFolderId;
+        ctx.session.carvis.car_vis_folder_link = `https://drive.google.com/drive/folders/${carVisFolderId}`;
+
+        await ctx.reply(ua.reglament)
+
+        if (ctx.session.mileage_update_require) {
+            await ctx.reply(ua.needOdometrPhoto)
+        }
+
+        await ctx.scene.enter('CAR_VIS_SCENE');
     } catch (error) {
-        console.error({ type: 'carMillegeByMaponIdOrOlateNumber', callback_query_data, error })
-    }
-
-    await ctx.reply(ua.waiting_preparing)
-
-    ctx.session.carvis.id = uuidv4();
-    ctx.session.carvis.car_id = id
-    ctx.session.carvis.car_num = car_num
-    ctx.session.carvis.car_vis_date = carDate;
-    ctx.session.carvis.created_by_id = from.id
-    ctx.session.carvis.created_by_name = from.first_name
-    ctx.session.carvis.created_at = new Date().toISOString();
-
-    const carFolderId = await getFolderIdByParentIdAndName({ name: car_num, parentId: process.env.CAR_VIS_FOLDER_ID });
-    ctx.session.carvis.car_folder_id = carFolderId
-    if (!carFolderId) {
-        ctx.session.carvis.car_folder_id = await createFolderInParentFolder({ name: car_num, parentId: process.env.CAR_VIS_FOLDER_ID })
-    }
-
-    const carDateFolderId = await getFolderIdByParentIdAndName({ name: carDate, parentId: ctx.session.carvis.car_folder_id });
-    ctx.session.carvis.car_date_folder_id = carDateFolderId;
-    if (!carDateFolderId) {
-        ctx.session.carvis.car_date_folder_id = await createFolderInParentFolder({ name: carDate, parentId: ctx.session.carvis.car_folder_id });
-    }
-
-    ctx.session.carvis.car_vis_folder_id = await createFolderInParentFolder({ name: carVisFolderName, parentId: ctx.session.carvis.car_date_folder_id });
-
-    ctx.session.carvis.car_vis_folder_link = `https://drive.google.com/drive/folders/${ctx.session.carvis.car_vis_folder_id}`
-
-    await ctx.reply(ua.reglament)
-
-    if (ctx.session.mileage_update_require) {
-        await ctx.reply(ua.needOdometrPhoto)
-    }
-
-    await ctx.scene.enter('CAR_VIS_SCENE');
-    await ctx.answerCbQuery()
+            console.error('Критическая ошибка в enterCarVisScene:', {
+                error_at: new Date().toISOString(),
+                user_id: from.id,
+                car_num: car_num,
+                error
+            });
+            await ctx.reply(ua.errorWhileEnterCarVisScene);
+        } finally {
+            await ctx.answerCbQuery();
+        }
+    
     return await next()
 }
 
@@ -112,4 +120,22 @@ async function daysWithNoMileageCheck({ ctx, id }) {
         ctx.session.mileage_update_require = true;
     }
     return
+}
+
+async function getOrCreateFolder(name, parentId) {
+    if (!parentId) {
+        throw new Error(`Отсутствует ID родительской папки для создания папки "${name}"`);
+    }
+
+    let folderId = await getFolderIdByParentIdAndName({ name, parentId });
+
+    if (!folderId) {
+        folderId = await createFolderInParentFolder({ name, parentId });
+    }
+
+    if (!folderId) {
+        throw new Error(`Не удалось получить или создать папку "${name}"`);
+    }
+
+    return folderId;
 }

@@ -49,7 +49,7 @@ export async function createFolderInParentFolder({ name, parentId }) {
             resource: fileMetaData,
             supportsAllDrives: true
         })
-        .catch((err) => console.log(err));
+
     console.log({ createFolderInParentFolder: result });
     const { data } = result
     return data.id
