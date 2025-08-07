@@ -23,7 +23,8 @@ export async function getFolderIdByParentIdAndName({ name, parentId }) {
         fields: `files(id, name)`,
         spaces: 'drive',
         supportsAllDrives: true,
-        supportsTeamDrives: true
+        supportsTeamDrives: true,
+        includeItemsFromAllDrives: true
     });
     const folders = res.data.files;
     if (folders.length === 0) {
@@ -85,7 +86,8 @@ export async function uploadFileToParentId({ createReadStream, name, parentId })
 
 
 if (process.env.ENV == 'dev') {
-    // getFolderIdByParentIdAndName('AA1403KM');
+    // const parentId = process.env.CAR_VIS_FOLDER_ID;
+    // getFolderIdByParentIdAndName({ name:'AA1403KM', parentId });
     // createFolder();
 }
 
