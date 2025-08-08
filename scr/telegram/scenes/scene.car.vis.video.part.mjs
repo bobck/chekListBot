@@ -23,28 +23,23 @@ export const sceneCarVisVideoPart = new Scenes.WizardScene(
         if (!ctx.has(callbackQuery('data'))) {
             return
         }
+
+        ctx.answerCbQuery();
+        
         const { callback_query } = ctx.update
         const { data } = callback_query
+        const { type } = JSON.parse(data)
 
-        const callback_query_data = JSON.parse(data)
-
-        const { type } = callback_query_data
-
+        await ctx.editMessageReplyMarkup(null);
 
         if (type == 'skipVideo') {
             ctx.session.carvis.has_video_360 = false;
-
             await saveAndLeave(ctx);
-            return ctx.answerCbQuery();
-        }
-
-        if (type != 'hasVideo') {
-            ctx.answerCbQuery();
             return
         }
+
         ctx.session.carvis.has_video_360 = true;
         ctx.reply(ua.video360Reglament);
-        ctx.answerCbQuery();
         ctx.wizard.next();
     },
     async (ctx) => {
