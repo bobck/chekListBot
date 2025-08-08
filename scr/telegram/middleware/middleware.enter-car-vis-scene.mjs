@@ -53,6 +53,8 @@ export async function enterCarVisScene(ctx, next) {
                     mapon_mileage: null
                 }
             };
+        await ctx.reply(ua.waiting_preparing)
+        await ctx.sendChatAction('typing');
         
         await daysWithNoMileageCheck({ ctx, id });
 
@@ -67,8 +69,6 @@ export async function enterCarVisScene(ctx, next) {
         } catch (error) {
             console.error({ type: 'carMillegeByMaponIdOrOlateNumber', callback_query_data, error })
         }
-
-        await ctx.reply(ua.waiting_preparing)
 
         const rootFolderId = process.env.CAR_VIS_FOLDER_ID;
 
