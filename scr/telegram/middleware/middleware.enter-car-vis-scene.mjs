@@ -26,6 +26,8 @@ export async function enterCarVisScene(ctx, next) {
         await next()
         return
     }
+
+    await ctx.editMessageText(`Карвіз для авто ${car_num} розпочато`);
     await ctx.sendChatAction('typing');
 
     try {

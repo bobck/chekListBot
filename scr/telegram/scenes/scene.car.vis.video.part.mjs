@@ -30,14 +30,14 @@ export const sceneCarVisVideoPart = new Scenes.WizardScene(
         const { data } = callback_query
         const { type } = JSON.parse(data)
 
-        await ctx.editMessageReplyMarkup(null);
-
         if (type == 'skipVideo') {
             ctx.session.carvis.has_video_360 = false;
+            await ctx.editMessageText(ua.skipVideoMsg);
             await saveAndLeave(ctx);
             return
         }
 
+        await ctx.editMessageReplyMarkup(null);
         ctx.session.carvis.has_video_360 = true;
         ctx.reply(ua.video360Reglament);
         ctx.wizard.next();
