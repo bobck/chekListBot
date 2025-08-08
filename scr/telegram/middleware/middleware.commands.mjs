@@ -39,20 +39,19 @@ export function forceStop(ctx, next) {
         return next();
     }
 
+    ctx.answerCbQuery();
+
     if (type != 'FORCE_STOP') {
-        ctx.answerCbQuery();
         return
     }
 
     const [short_id] = ctx.session.carvis.id.split('-')
     if (id != short_id) {
         ctx.reply(ua.oldCarVisForceStop);
-        ctx.answerCbQuery();
         return
     }
 
     ctx.session = {}
-    ctx.answerCbQuery();
     ctx.reply(ua.forceStopDone);
     return
 }

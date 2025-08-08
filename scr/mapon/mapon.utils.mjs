@@ -6,7 +6,7 @@ async function maponGet() {
     const response = await fetch(`https://mapon.com/api/v1/unit/list.json?key=${process.env.MAPON_API_KEY}`, {
         method: "GET"
     });
-
+    //TODO SyntaxError: Unexpected token < in JSON at position 0
     const json = await response.json();
 
     const { data, error } = json;

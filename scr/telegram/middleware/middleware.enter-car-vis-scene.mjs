@@ -21,8 +21,9 @@ export async function enterCarVisScene(ctx, next) {
 
     const { type, id, car_num } = callback_query_data
 
+    await ctx.answerCbQuery();
+
     if (type != 'START_CV') {
-        ctx.answerCbQuery()
         await next()
         return
     }
@@ -95,8 +96,6 @@ export async function enterCarVisScene(ctx, next) {
                 error
             });
             await ctx.reply(ua.errorWhileEnterCarVisScene);
-        } finally {
-            await ctx.answerCbQuery();
         }
     
     return await next()
