@@ -38,9 +38,7 @@ export async function uploadPhotoToDrive({ ctx, photo_name, file_id, current_cur
         name: `${car_num} - ${photo_name}.jpg`,
         parentId: car_vis_folder_id
     })
-    if (!ctx.session.carvis.photos) {
-        ctx.session.carvis.photos = {}
-    }
+
     ctx.session.carvis.photos[`${photo_name}_id`] = photo_id;
     ctx.session.carvis.photos[`${photo_name}_url`] = `https://drive.google.com/uc?id=${photo_id}&export=jpg`;
     ctx.session.carvis.steps_loaded[current_cursor] = 'done'
