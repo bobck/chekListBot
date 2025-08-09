@@ -302,13 +302,8 @@ if (process.env.ENV == 'test') {
 }
 
 sceneCarVis.use((ctx, next) => {
-
     if (ctx.has(callbackQuery('data'))) {
         return forceStop(ctx, next);
-    }
-
-    if (!ctx.session.carvis.steps_loaded) {
-        ctx.session.carvis.steps_loaded = {}
     }
 
     if (ctx.wizard.cursor === 0) {

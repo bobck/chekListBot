@@ -50,7 +50,8 @@ export async function enterCarVisScene(ctx, next) {
                     created_by_id: from.id,
                     created_by_name: from.first_name,
                     created_at: new Date().toISOString(),
-                    mapon_mileage: null
+                    mapon_mileage: null,
+                    steps_loaded: {}
                 }
             };
         await ctx.reply(ua.waiting_preparing)
