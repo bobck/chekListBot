@@ -51,7 +51,6 @@ export async function createFolderInParentFolder({ name, parentId }) {
             supportsAllDrives: true
         })
 
-    console.log({ createFolderInParentFolder: result });
     const { data } = result
     return data.id
 }
