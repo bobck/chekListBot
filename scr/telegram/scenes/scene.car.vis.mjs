@@ -254,7 +254,7 @@ export const sceneCarVis = new Scenes.WizardScene(
             waiting_time++
             if (waiting_time >= 60) {
                 ctx.reply(ua.groupSavingError)
-                console.error({ type: 'groupSavingError', ctx, carvis: ctx.session.carvis.steps_loaded })
+                console.error({ type: 'groupSavingError', steps_loaded: ctx.session.carvis.steps_loaded })
                 ctx.scene.leave()
                 return;
             }

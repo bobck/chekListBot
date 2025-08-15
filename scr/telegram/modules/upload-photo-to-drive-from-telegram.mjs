@@ -25,10 +25,26 @@ export async function uploadPhotoToDrive({ ctx, photo_name, file_id, current_cur
         }
     };
 
-    const createReadStream = await got.stream(href, streamOptions).on('retry', (attempt, error, retryCount) => {
-        console.log(`Attempt: ${attempt}, Retry Count: ${retryCount}, Error: ${error.message}`);
-        console.log({ error });
+    const createReadStream = got.stream(href, streamOptions)
+    
+    createReadStream.on('retry', (retryCount, error) => {
+        console.error({ 
+            type: 'gotStreamRetry',
+            href,
+            retryCount,
+            error: error.message,
+            code: error.code
+         });
+    });;
 
+    createReadStream.on('error', (error) => {
+        console.error({ 
+            type: 'gotStreamFailure',
+            href,
+            retryCount,
+            error: error.message,
+            code: error.code
+         });
     });;
 
     const { car_num, car_vis_folder_id } = ctx.session.carvis

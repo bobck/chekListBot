@@ -75,6 +75,7 @@ export async function uploadFileToParentId({ createReadStream, name, parentId })
             return file.data.id;
         } catch (error) {
             if (attempt === maxRetries - 1) {
+                console.error({ type: 'uploadFileToParentId reach MaxRetries', error })
                 throw error; // Переброшенная ошибка, если все попытки неудачны
             }
             await new Promise(resolve => setTimeout(resolve, retryInterval)); // Задержка перед следующей попыткой
