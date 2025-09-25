@@ -6,6 +6,7 @@ const { ua } = translate
 export async function onStart(ctx, next) {
     ctx.sendChatAction('typing');
     const button = Markup.button.switchToCurrentChat(ua.searchIcon, '')
+    console.log(ctx)
     const buttons = [[button]]
     ctx.reply(ua.pressForSearch, Markup.inlineKeyboard(buttons))
     await next()
