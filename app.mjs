@@ -32,7 +32,7 @@ bot.use(stage.middleware());
 const app = express();
 
 (async () => {
-    runBitrixJob();
+    // runBitrixJob();
 
     bot.start(onStart);
 
