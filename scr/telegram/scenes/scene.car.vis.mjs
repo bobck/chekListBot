@@ -209,10 +209,11 @@ export const sceneCarVis = new Scenes.WizardScene(
         source: fs.createReadStream(path.join(process.cwd(), 'pics/9.jpg')),
       },
       {
-        caption: ua.askPhotoText,
+        caption: ua.askPhotoWithClosedBeltWarningText,
       }
     );
   },
+  //
   async (ctx) => {
     const current_cursor = ctx.wizard.cursor;
 
@@ -221,6 +222,31 @@ export const sceneCarVis = new Scenes.WizardScene(
       ctx,
       file_id: ctx.session.file_id,
       photo_name: 'photo_9',
+      current_cursor,
+    });
+
+    if (ctx.session.carvis.steps_loaded[current_cursor + 1]) {
+      return;
+    }
+    await ctx.replyWithPhoto(
+      {
+        source: fs.createReadStream(path.join(process.cwd(), 'pics/10.jpg')),
+      },
+      {
+        caption: ua.askPhotoWithClosedBeltWarningText,
+      }
+    );
+  },
+  //
+
+  async (ctx) => {
+    const current_cursor = ctx.wizard.cursor;
+
+    ctx.wizard.next();
+    await uploadPhotoToDrive({
+      ctx,
+      file_id: ctx.session.file_id,
+      photo_name: 'photo_10',
       current_cursor,
     });
 

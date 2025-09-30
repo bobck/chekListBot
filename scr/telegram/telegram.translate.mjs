@@ -3,6 +3,9 @@ export const translate = {
     pressForSearch: 'Привіт 👋\nНатисни для пошуку авто під карвіз 👇',
     searchIcon: '🔎',
     askPhotoText: 'Завантаж фото авто авто як на прикладі ☝️',
+    askPhotoWithClosedBeltWarningText:
+      'Завантаж фото авто авто як на прикладі ☝️ зверни увагу щоб ремені безпеки були замкнуті',
+
     askSecondPhoto: 'Завантаж фото авто авто як на прикладі ☝️',
     preparing_mileage_info:
       '⏳ Перевіряю останню дату завантаження фото одометра...',
