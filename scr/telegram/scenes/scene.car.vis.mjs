@@ -209,7 +209,7 @@ export const sceneCarVis = new Scenes.WizardScene(
         source: fs.createReadStream(path.join(process.cwd(), "pics/9.jpg")),
       },
       {
-        caption: ua.askPhotoText,
+        caption: ua.askPhotoWithClosedBeltWarningText,
       }
     );
   },
@@ -233,7 +233,7 @@ export const sceneCarVis = new Scenes.WizardScene(
         source: fs.createReadStream(path.join(process.cwd(), "pics/10.jpg")),
       },
       {
-        caption: ua.askPhotoText,
+        caption: ua.askPhotoWithClosedBeltWarningText,
       }
     );
   },
