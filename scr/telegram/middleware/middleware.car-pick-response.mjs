@@ -1,4 +1,4 @@
-import { Telegram } from "telegraf";
+import { Telegram } from 'telegraf';
 
 const bot = new Telegram(process.env.TELEGRAM_API_KEY);
 

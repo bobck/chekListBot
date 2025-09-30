@@ -33,7 +33,7 @@
     "@google-cloud/local-auth": "^2.1.0",
     "@googleapis/drive": "^8.4.0",
     "@telegraf/session": "^2.0.0-beta.6",
-    "better-sqlite3": "^9.6.0", 
+    "better-sqlite3": "^9.6.0",
     "cron": "^3.1.6",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
