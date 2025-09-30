@@ -39,6 +39,9 @@ export const sceneCarVis = new Scenes.WizardScene(
     if (ctx.session.carvis.steps_loaded[current_cursor + 1]) {
       return;
     }
+    if (ctx.session.carvis.steps_loaded[current_cursor + 1]) {
+      return;
+    }
 
     await ctx.replyWithPhoto(
       {
@@ -53,6 +56,7 @@ export const sceneCarVis = new Scenes.WizardScene(
     const current_cursor = ctx.wizard.cursor;
 
     ctx.wizard.next();
+    ctx.wizard.next();
 
     await uploadPhotoToDrive({
       ctx,
@@ -61,6 +65,9 @@ export const sceneCarVis = new Scenes.WizardScene(
       current_cursor,
     });
 
+    if (ctx.session.carvis.steps_loaded[current_cursor + 1]) {
+      return;
+    }
     if (ctx.session.carvis.steps_loaded[current_cursor + 1]) {
       return;
     }
@@ -77,6 +84,7 @@ export const sceneCarVis = new Scenes.WizardScene(
   async (ctx) => {
     const current_cursor = ctx.wizard.cursor;
 
+    ctx.wizard.next();
     ctx.wizard.next();
 
     await uploadPhotoToDrive({
@@ -254,6 +262,10 @@ export const sceneCarVis = new Scenes.WizardScene(
       if (ctx.session.carvis.steps_loaded[current_cursor + 1]) {
         return;
       }
+    if (ctx.session.mileage_update_require) {
+      if (ctx.session.carvis.steps_loaded[current_cursor + 1]) {
+        return;
+      }
 
       await ctx.replyWithPhoto(
         {
@@ -268,6 +280,7 @@ export const sceneCarVis = new Scenes.WizardScene(
       return;
     }
 
+    let waiting_time = 0;
     let waiting_time = 0;
 
     while (
@@ -299,6 +312,7 @@ export const sceneCarVis = new Scenes.WizardScene(
       current_cursor,
     });
 
+    let waiting_time = 0;
     let waiting_time = 0;
 
     while (
@@ -336,6 +350,9 @@ sceneCarVis.use((ctx, next) => {
   if (ctx.wizard.cursor === 0) {
     return next();
   }
+  if (ctx.wizard.cursor === 0) {
+    return next();
+  }
 
   if (!ctx.has(message("document")) && !ctx.has(message("photo"))) {
     return ctx.reply(ua.onlyPicsAllowed);
@@ -349,6 +366,11 @@ sceneCarVis.use((ctx, next) => {
     }
   }
 
+  const { photo, document } = ctx.update.message;
+  const { file_id } = document || photo.pop();
+  ctx.session.file_id = file_id;
+  return next();
+});
   const { photo, document } = ctx.update.message;
   const { file_id } = document || photo.pop();
   ctx.session.file_id = file_id;

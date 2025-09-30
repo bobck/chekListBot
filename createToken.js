@@ -10,7 +10,7 @@ const { auth } = require('@googleapis/drive');
 // If modifying these scopes, delete token.json.
 const SCOPES = [
   'https://www.googleapis.com/auth/drive',
-  'https://www.googleapis.com/auth/bigquery'
+  'https://www.googleapis.com/auth/bigquery',
 ];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
@@ -28,7 +28,6 @@ async function loadSavedCredentialsIfExist() {
     const content = await fs.readFile(TOKEN_PATH);
     const credentials = JSON.parse(content);
     return auth.fromJSON(credentials);
-
   } catch (err) {
     return null;
   }
@@ -68,7 +67,7 @@ async function saveCredentials(client) {
   });
   if (client.credentials) {
     await saveCredentials(client);
-    console.log('credentials toke.json was saved')
+    console.log('credentials toke.json was saved');
   }
   return client;
-})()
+})();

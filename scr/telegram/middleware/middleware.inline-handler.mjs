@@ -1,7 +1,8 @@
-import { db } from "../../database.mjs";
+import { db } from '../../database.mjs';
 
 export async function onInline(query, ctx) {
-  const cars = await db.selectFrom("cars").select(["id", "car_num"]).execute();
+  const cars = await db.selectFrom('cars').select(['id', 'car_num']).execute();
+
   const filtredCars = cars.filter((car) => car.car_num.includes(query));
 
   if (filtredCars.length > 50) {
@@ -11,7 +12,7 @@ export async function onInline(query, ctx) {
   const bottoms = filtredCars.map((car, i) => {
     const { id, car_num } = car;
     return {
-      type: "article",
+      type: 'article',
       id: JSON.stringify({ id, car_num }),
       title: car_num,
       input_message_content: {

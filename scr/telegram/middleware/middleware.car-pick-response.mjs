@@ -3,7 +3,6 @@ import { Telegram } from "telegraf";
 const bot = new Telegram(process.env.TELEGRAM_API_KEY);
 
 export async function carPickResponse(ctx, next) {
-  console.log("car pick response triggered;");
   const { chosen_inline_result } = ctx.update;
   const { result_id, from } = chosen_inline_result;
 
@@ -14,13 +13,13 @@ export async function carPickResponse(ctx, next) {
       [
         {
           text: car_num,
-          callback_data: JSON.stringify({ type: "START_CV", id, car_num }),
+          callback_data: JSON.stringify({ type: 'START_CV', id, car_num }),
         },
       ],
     ],
   };
 
-  bot.sendMessage(from.id, "Обери авто щоб почати карвіз", { reply_markup });
+  bot.sendMessage(from.id, 'Обери авто щоб почати карвіз', { reply_markup });
   await next();
   return;
 }

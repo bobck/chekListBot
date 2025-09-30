@@ -3,12 +3,12 @@ import { v4 as uuidv4 } from "uuid";
 import {
   getFolderIdByParentIdAndName,
   createFolderInParentFolder,
-} from "../../drive/drive.utils.mjs";
-import { db } from "../../database.mjs";
-import { carMillegeByMaponIdOrOlateNumber } from "../../mapon/mapon.utils.mjs";
-import { daysWithNoMileageByCarId } from "../../bq/bq.utils.mjs";
+} from '../../drive/drive.utils.mjs';
+import { db } from '../../database.mjs';
+import { carMillegeByMaponIdOrOlateNumber } from '../../mapon/mapon.utils.mjs';
+import { daysWithNoMileageByCarId } from '../../bq/bq.utils.mjs';
 
-import { translate } from "../telegram.translate.mjs";
+import { translate } from '../telegram.translate.mjs';
 const { ua } = translate;
 
 const bot = new Telegram(process.env.TELEGRAM_API_KEY);
@@ -23,23 +23,23 @@ export async function enterCarVisScene(ctx, next) {
 
   await ctx.answerCbQuery();
 
-  if (type != "START_CV") {
+  if (type != 'START_CV') {
     await next();
     return;
   }
 
   await ctx.editMessageText(`Карвіз для авто ${car_num} розпочато`);
-  await ctx.sendChatAction("typing");
+  await ctx.sendChatAction('typing');
 
   try {
     const [carRow] = await db
-      .selectFrom("cars")
-      .select("mapon_id")
-      .where("id", "=", id)
+      .selectFrom('cars')
+      .select('mapon_id')
+      .where('id', '=', id)
       .execute();
     const { mapon_id } = carRow;
 
-    const [carDate, carVisFolderName] = new Date().toISOString().split("T");
+    const [carDate, carVisFolderName] = new Date().toISOString().split('T');
 
     ctx.session = {
       carvis: {
@@ -56,7 +56,7 @@ export async function enterCarVisScene(ctx, next) {
       },
     };
     await ctx.reply(ua.waiting_preparing);
-    await ctx.sendChatAction("typing");
+    await ctx.sendChatAction('typing');
 
     await daysWithNoMileageCheck({ ctx, id });
 
@@ -72,7 +72,7 @@ export async function enterCarVisScene(ctx, next) {
       }
     } catch (error) {
       console.error({
-        type: "carMillegeByMaponIdOrOlateNumber",
+        type: 'carMillegeByMaponIdOrOlateNumber',
         callback_query_data,
         error,
       });
@@ -98,9 +98,9 @@ export async function enterCarVisScene(ctx, next) {
       await ctx.reply(ua.needOdometrPhoto);
     }
 
-    await ctx.scene.enter("CAR_VIS_SCENE");
+    await ctx.scene.enter('CAR_VIS_SCENE');
   } catch (error) {
-    console.error("Критическая ошибка в enterCarVisScene:", {
+    console.error('Критическая ошибка в enterCarVisScene:', {
       error_at: new Date().toISOString(),
       user_id: from.id,
       car_num: car_num,
@@ -113,7 +113,7 @@ export async function enterCarVisScene(ctx, next) {
 }
 
 async function daysWithNoMileageCheck({ ctx, id }) {
-  if (process.env.SKIP_MILEAGE_CHECK == "YES") {
+  if (process.env.SKIP_MILEAGE_CHECK == 'YES') {
     return;
   }
 
@@ -132,7 +132,7 @@ async function daysWithNoMileageCheck({ ctx, id }) {
       ctx.session.mileage_update_require = true;
     }
   } catch (error) {
-    console.error({ type: "daysWithNoMileageByCarId", error });
+    console.error({ type: 'daysWithNoMileageByCarId', error });
     ctx.session.mileage_update_require = true;
   }
   return;

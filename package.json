@@ -12,7 +12,8 @@
     "devdrive": "ENV=dev node -r dotenv/config scr/drive/drive.utils.mjs",
     "devbq": "ENV=dev node -r dotenv/config scr/bq/bq.utils.mjs",
     "devbitrix": "ENV=dev node -r dotenv/config scr/bitrix/bitrix.utils.mjs",
-    "refreshcars": "ENV=dev node -r dotenv/config scr/bitrix/modules/refresh-car-list.mjs"
+    "refreshcars": "ENV=dev node -r dotenv/config scr/bitrix/modules/refresh-car-list.mjs",
+    "format": "prettier --write ."
   },
   "keywords": [
     "talegram",
@@ -23,7 +24,8 @@
   "author": "bobckx10@gmail.com",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "prettier": "^3.6.2"
   },
   "dependencies": {
     "@2bad/bitrix": "^2.5.1",
