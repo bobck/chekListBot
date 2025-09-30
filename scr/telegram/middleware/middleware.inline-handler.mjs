@@ -2,7 +2,6 @@ import { db } from "../../database.mjs";
 
 export async function onInline(query, ctx) {
   const cars = await db.selectFrom("cars").select(["id", "car_num"]).execute();
-  console.log({ query });
   const filtredCars = cars.filter((car) => car.car_num.includes(query));
 
   if (filtredCars.length > 50) {
