@@ -132,7 +132,7 @@ async function saveAndLeave(ctx) {
     photo_8_url,
     photo_9_id,
     photo_9_url,
-     photo_10_id,
+    photo_10_id,
     photo_10_url,
     photo_odometr_id,
     photo_odometr_url,

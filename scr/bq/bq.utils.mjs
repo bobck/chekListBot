@@ -53,7 +53,7 @@ function mapObjToSqlString(row) {
 
 export async function insertRowWithDlm(row) {
   const { columnString, valuesString } = mapObjToSqlString(row);
-  
+
   const insertQuery = `INSERT INTO \`${process.env.BQ_DATASET_ID}.${process.env.BQ_TABLE_ID}\` ${columnString} ${valuesString}`;
 
   const [job] = await bigquery.createQueryJob({
