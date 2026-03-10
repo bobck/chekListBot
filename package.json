@@ -13,6 +13,7 @@
     "devbq": "ENV=dev node -r dotenv/config scr/bq/bq.utils.mjs",
     "devbitrix": "ENV=dev node -r dotenv/config scr/bitrix/bitrix.utils.mjs",
     "refreshcars": "ENV=dev node -r dotenv/config scr/bitrix/modules/refresh-car-list.mjs",
+    "refreshgps": "ENV=dev node -r dotenv/config scr/gps/modules/refresh-gps-devices.mjs",
     "format": "prettier --write ."
   },
   "keywords": [

@@ -5,7 +5,7 @@ import {
   createFolderInParentFolder,
 } from '../../drive/drive.utils.mjs';
 import { db } from '../../database.mjs';
-import { carMillegeByMaponIdOrOlateNumber } from '../../mapon/mapon.utils.mjs';
+import { carMileageByPlateNumber } from '../../gps/gps.utils.mjs';
 import { daysWithNoMileageByCarId } from '../../bq/bq.utils.mjs';
 
 import { translate } from '../telegram.translate.mjs';
@@ -32,13 +32,6 @@ export async function enterCarVisScene(ctx, next) {
   await ctx.sendChatAction('typing');
 
   try {
-    const [carRow] = await db
-      .selectFrom('cars')
-      .select('mapon_id')
-      .where('id', '=', id)
-      .execute();
-    const { mapon_id } = carRow;
-
     const [carDate, carVisFolderName] = new Date().toISOString().split('T');
 
     ctx.session = {
@@ -61,18 +54,14 @@ export async function enterCarVisScene(ctx, next) {
     await daysWithNoMileageCheck({ ctx, id });
 
     try {
-      const { result, unit } = await carMillegeByMaponIdOrOlateNumber({
-        maponId: mapon_id,
-        plateNumber: car_num,
-      });
+      const { mileage } = await carMileageByPlateNumber(car_num);
 
-      if (result) {
-        const { mileage } = unit;
-        ctx.session.carvis.mapon_mileage = Math.round(parseInt(mileage) / 1000);
+      if (mileage != null) {
+        ctx.session.carvis.mapon_mileage = mileage;
       }
     } catch (error) {
       console.error({
-        type: 'carMillegeByMaponIdOrOlateNumber',
+        type: 'carMileageByPlateNumber',
         callback_query_data,
         error,
       });
