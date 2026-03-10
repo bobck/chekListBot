@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import { auth, drive } from '@googleapis/drive';
+import { devLog } from '../utils.mjs';
 
 const content = await fs.readFileSync('token.json');
 const credentials = JSON.parse(content);
@@ -12,6 +13,7 @@ const client = drive({ version: 'v3', auth: authClient });
  * @param {OAuth2Client} authClient An authorized OAuth2 client.
  */
 export async function getFolderIdByParentIdAndName({ name, parentId }) {
+  devLog(`Drive API: listing folders with name '${name}' in parent '${parentId}'`);
   const res = await client.files.list({
     pageSize: 10,
     q: `mimeType = 'application/vnd.google-apps.folder' and name='${name}' and '${parentId}' in parents and trashed = false`,
@@ -38,6 +40,7 @@ export async function createFolderInParentFolder({ name, parentId }) {
     parents: [parentId],
   };
 
+  devLog(`Drive API: creating folder '${name}' in parent '${parentId}'`);
   const result = await client.files.create({
     fields: 'id',
     resource: fileMetaData,
@@ -53,30 +56,23 @@ export async function uploadFileToParentId({
   name,
   parentId,
 }) {
-  const maxRetries = 3;
-  const retryInterval = 1500;
-
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
-    try {
-      const file = await client.files.create({
-        media: {
-          body: createReadStream,
-        },
-        fields: 'id',
-        requestBody: {
-          name,
-          parents: [parentId],
-        },
-        supportsAllDrives: true,
-      });
-      return file.data.id;
-    } catch (error) {
-      if (attempt === maxRetries - 1) {
-        console.error({ type: 'uploadFileToParentId reach MaxRetries', error });
-        throw error; // Переброшенная ошибка, если все попытки неудачны
-      }
-      await new Promise((resolve) => setTimeout(resolve, retryInterval)); // Задержка перед следующей попыткой
-    }
+  try {
+    devLog(`Drive API: uploading file '${name}' to parent '${parentId}'`);
+    const file = await client.files.create({
+      media: {
+        body: createReadStream,
+      },
+      fields: 'id',
+      requestBody: {
+        name,
+        parents: [parentId],
+      },
+      supportsAllDrives: true,
+    });
+    return file.data.id;
+  } catch (error) {
+    console.error({ type: 'uploadFileToParentId error', error });
+    throw error;
   }
 }
 
