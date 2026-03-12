@@ -48,20 +48,26 @@ export async function fetchDevicePosition(deviceId) {
 }
 
 export async function carMileageByPlateNumber(plateNumber) {
-  devLog(`GPS API: looking up device for plate '${plateNumber}' in gps_devices table`);
+  devLog(`GPS API: looking up device for plate '${plateNumber}' in cars table`);
 
   const rows = await db
-    .selectFrom('gps_devices')
-    .select('id')
-    .where('name', '=', plateNumber)
+    .selectFrom('cars')
+    .select('gps_device_id')
+    .where('car_num', '=', plateNumber)
     .execute();
 
   if (!rows.length) {
-    devLog(`GPS API: no device found for plate '${plateNumber}'`);
+    devLog(`GPS API: no car found for plate '${plateNumber}'`);
     return { mileage: null };
   }
 
-  const { id: deviceId } = rows[0];
+  const { gps_device_id: deviceId } = rows[0];
+
+  if (!deviceId) {
+    devLog(`GPS API: no gps_device_id found for plate '${plateNumber}'`);
+    return { mileage: null };
+  }
+
   devLog(`GPS API: found deviceId=${deviceId} for plate '${plateNumber}'`);
 
   const positions = await fetchDevicePosition(deviceId);
