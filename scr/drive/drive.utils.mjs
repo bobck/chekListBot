@@ -53,22 +53,30 @@ export async function uploadFileToParentId({
   name,
   parentId,
 }) {
-  try {
-    const file = await client.files.create({
-      media: {
-        body: createReadStream,
-      },
-      fields: 'id',
-      requestBody: {
-        name,
-        parents: [parentId],
-      },
-      supportsAllDrives: true,
-    });
-    return file.data.id;
-  } catch (error) {
-    console.error({ type: 'uploadFileToParentId error', error });
-    throw error;
+  const maxRetries = 3;
+  const retryInterval = 1500;
+
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      const file = await client.files.create({
+        media: {
+          body: createReadStream,
+        },
+        fields: 'id',
+        requestBody: {
+          name,
+          parents: [parentId],
+        },
+        supportsAllDrives: true,
+      });
+      return file.data.id;
+    } catch (error) {
+      if (attempt === maxRetries - 1) {
+        console.error({ type: 'uploadFileToParentId reach MaxRetries', error });
+        throw error; // Переброшенная ошибка, если все попытки неудачны
+      }
+      await new Promise((resolve) => setTimeout(resolve, retryInterval)); // Задержка перед следующей попыткой
+    }
   }
 }
 

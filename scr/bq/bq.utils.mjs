@@ -6,10 +6,14 @@ const bigquery = new BigQuery({
 });
 
 export async function insertRowsAsStream(rows) {
+  // const rows = [
+  //     { ID: 666, First_Name: 'Tom' },
+  // ];
   await bigquery
     .dataset(process.env.BQ_DATASET_ID)
     .table(process.env.BQ_TABLE_ID)
     .insert(rows);
+  // console.log(`Inserted ${rows.length} rows`);
 }
 
 function mapObjToSqlString(row) {
@@ -51,6 +55,7 @@ export async function insertRowWithDlm(row) {
   const { columnString, valuesString } = mapObjToSqlString(row);
 
   const insertQuery = `INSERT INTO \`${process.env.BQ_DATASET_ID}.${process.env.BQ_TABLE_ID}\` ${columnString} ${valuesString}`;
+
   const [job] = await bigquery.createQueryJob({
     query: insertQuery,
     location: 'US',

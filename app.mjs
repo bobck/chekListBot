@@ -10,7 +10,6 @@ import {
 } from './scr/telegram/middleware/middleware.commands.mjs';
 import { onInline } from './scr/telegram/middleware/middleware.inline-handler.mjs';
 import { runBitrixJob } from './scr/bitrix/bootstrap.mjs';
-
 import { carPickResponse } from './scr/telegram/middleware/middleware.car-pick-response.mjs';
 import { enterCarVisScene } from './scr/telegram/middleware/middleware.enter-car-vis-scene.mjs';
 import { sceneCarVis } from './scr/telegram/scenes/scene.car.vis.mjs';
