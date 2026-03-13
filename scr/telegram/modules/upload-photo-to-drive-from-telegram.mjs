@@ -1,7 +1,6 @@
 import got from 'got';
 import { uploadFileToParentId } from '../../drive/drive.utils.mjs';
 import { translate } from '../telegram.translate.mjs';
-import { devLog } from '../../utils.mjs';
 const { ua } = translate;
 
 export async function uploadPhotoToDrive({
@@ -16,14 +15,10 @@ export async function uploadPhotoToDrive({
     ctx.session.carvis.steps_loaded[current_cursor - 1] == 'done' ||
     current_cursor == 2
   ) {
-    devLog('Telegram API: calling ctx.reply(ua.waiting)');
     await ctx.reply(ua.waiting);
   }
-  devLog('Telegram API: calling ctx.sendChatAction(typing)');
   await ctx.sendChatAction('typing');
-  devLog(`Telegram API: calling ctx.telegram.getFileLink(${file_id})`);
   const fileLink = await ctx.telegram.getFileLink(file_id);
-  devLog(`Telegram API: received fileLink for ${file_id}:`, fileLink.href);
   const { href } = fileLink;
 
   const streamOptions = {
@@ -93,9 +88,7 @@ export async function uploadPhotoToDrive({
 }
 
 export async function uploadVideoToDrive({ ctx, video_name, file_id }) {
-  devLog(`Telegram API: calling ctx.telegram.getFileLink(${file_id}) for video`);
   const fileLink = await ctx.telegram.getFileLink(file_id);
-  devLog(`Telegram API: received fileLink for video ${file_id}:`, fileLink.href);
   const { href } = fileLink;
   const createReadStream = got.stream(href);
 

@@ -1,5 +1,4 @@
 import { BigQuery } from '@google-cloud/bigquery';
-import { devLog } from '../utils.mjs';
 
 const bigquery = new BigQuery({
   projectId: process.env.BQ_PROJECT_NAME,
@@ -7,7 +6,6 @@ const bigquery = new BigQuery({
 });
 
 export async function insertRowsAsStream(rows) {
-  devLog(`BQ API: inserting ${rows.length} rows as stream into ${process.env.BQ_DATASET_ID}.${process.env.BQ_TABLE_ID}`);
   await bigquery
     .dataset(process.env.BQ_DATASET_ID)
     .table(process.env.BQ_TABLE_ID)
@@ -53,14 +51,11 @@ export async function insertRowWithDlm(row) {
   const { columnString, valuesString } = mapObjToSqlString(row);
 
   const insertQuery = `INSERT INTO \`${process.env.BQ_DATASET_ID}.${process.env.BQ_TABLE_ID}\` ${columnString} ${valuesString}`;
-  devLog(`BQ API: creating query job for row insertion:`, insertQuery);
-
   const [job] = await bigquery.createQueryJob({
     query: insertQuery,
     location: 'US',
   });
 
-  devLog(`BQ API: getting query results for job ${job.id}`);
   await job.getQueryResults();
 }
 
@@ -85,11 +80,9 @@ export async function daysWithNoMileageByCarId({ id }) {
     },
   };
 
-  devLog(`BQ API: creating job for daysWithNoMileageByCarId for car_id '${id}'`);
   const response = await bigquery.createJob(options);
   const [job] = response;
 
-  devLog(`BQ API: getting query results for job ${job.id}`);
   const [rows] = await job.getQueryResults(job);
 
   if (!rows.length) {

@@ -1,5 +1,4 @@
 import { Telegram } from 'telegraf';
-import { devLog } from '../../utils.mjs';
 
 const bot = new Telegram(process.env.TELEGRAM_API_KEY);
 
@@ -9,8 +8,6 @@ export async function carPickResponse(ctx, next) {
     const { result_id, from } = chosen_inline_result;
 
     const { id, car_num } = JSON.parse(result_id);
-    devLog(`Telegram API: user ${from.id} chose inline result for car '${car_num}'`);
-
     const reply_markup = {
       inline_keyboard: [
         [
@@ -22,12 +19,10 @@ export async function carPickResponse(ctx, next) {
       ],
     };
 
-    devLog(`Telegram API: sending message to user ${from.id} with start CV button`);
     bot.sendMessage(from.id, 'Обери авто щоб почати карвіз', { reply_markup });
     await next();
     return;
   } catch (error) {
-    devLog(`Telegram API Error: carPickResponse failed - ${error.message}`);
     console.error({ type: 'carPickResponse Error', error });
   }
 }

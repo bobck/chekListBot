@@ -1,6 +1,5 @@
 import * as fs from 'fs';
 import { auth, drive } from '@googleapis/drive';
-import { devLog } from '../utils.mjs';
 
 const content = await fs.readFileSync('token.json');
 const credentials = JSON.parse(content);
@@ -13,7 +12,6 @@ const client = drive({ version: 'v3', auth: authClient });
  * @param {OAuth2Client} authClient An authorized OAuth2 client.
  */
 export async function getFolderIdByParentIdAndName({ name, parentId }) {
-  devLog(`Drive API: listing folders with name '${name}' in parent '${parentId}'`);
   const res = await client.files.list({
     pageSize: 10,
     q: `mimeType = 'application/vnd.google-apps.folder' and name='${name}' and '${parentId}' in parents and trashed = false`,
@@ -40,7 +38,6 @@ export async function createFolderInParentFolder({ name, parentId }) {
     parents: [parentId],
   };
 
-  devLog(`Drive API: creating folder '${name}' in parent '${parentId}'`);
   const result = await client.files.create({
     fields: 'id',
     resource: fileMetaData,
@@ -57,7 +54,6 @@ export async function uploadFileToParentId({
   parentId,
 }) {
   try {
-    devLog(`Drive API: uploading file '${name}' to parent '${parentId}'`);
     const file = await client.files.create({
       media: {
         body: createReadStream,
