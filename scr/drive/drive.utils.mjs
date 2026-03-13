@@ -79,9 +79,3 @@ export async function uploadFileToParentId({
     }
   }
 }
-
-if (process.env.ENV == 'dev') {
-  // const parentId = process.env.CAR_VIS_FOLDER_ID;
-  // getFolderIdByParentIdAndName({ name:'AA1403KM', parentId });
-  // createFolder();
-}
