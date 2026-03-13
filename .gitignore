@@ -8,3 +8,4 @@ token.json
 scr/.DS_Store
 scr/telegram/.DS_Store
 main.db
+*.xlsx
