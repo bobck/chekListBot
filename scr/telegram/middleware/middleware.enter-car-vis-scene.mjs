@@ -5,7 +5,7 @@ import {
   createFolderInParentFolder,
 } from '../../drive/drive.utils.mjs';
 import { db } from '../../database.mjs';
-import { carMileageByPlateNumber } from '../../gps/gps.utils.mjs';
+import { getDeviceMileage } from '../../gps/gps.utils.mjs';
 import { daysWithNoMileageByCarId } from '../../bq/bq.utils.mjs';
 
 import { translate } from '../telegram.translate.mjs';
@@ -54,14 +54,21 @@ export async function enterCarVisScene(ctx, next) {
     await daysWithNoMileageCheck({ ctx, id });
 
     try {
-      const { mileage } = await carMileageByPlateNumber(car_num);
+      const [carRow] = await db
+        .selectFrom('cars')
+        .select('gps_device_id')
+        .where('id', '=', id)
+        .execute();
 
-      if (mileage != null) {
-        ctx.session.carvis.mapon_mileage = mileage;
+      if (carRow?.gps_device_id) {
+        const { mileage } = await getDeviceMileage(carRow.gps_device_id);
+        if (mileage != null) {
+          ctx.session.carvis.mapon_mileage = mileage;
+        }
       }
     } catch (error) {
       console.error({
-        type: 'carMileageByPlateNumber',
+        type: 'getDeviceMileage',
         callback_query_data,
         error,
       });

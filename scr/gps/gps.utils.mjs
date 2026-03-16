@@ -1,6 +1,4 @@
 import fetch from 'node-fetch';
-import { db } from '../database.mjs';
-
 
 export async function fetchDevicePosition(deviceId) {
   const response = await fetch(
@@ -24,23 +22,7 @@ export async function fetchDevicePosition(deviceId) {
   return data;
 }
 
-export async function carMileageByPlateNumber(plateNumber) {
-  const rows = await db
-    .selectFrom('cars')
-    .select('gps_device_id')
-    .where('car_num', '=', plateNumber)
-    .execute();
-
-  if (!rows.length) {
-    return { mileage: null };
-  }
-
-  const { gps_device_id: deviceId } = rows[0];
-
-  if (!deviceId) {
-    return { mileage: null };
-  }
-
+export async function getDeviceMileage(deviceId) {
   const positions = await fetchDevicePosition(deviceId);
 
   if (!positions.length) {
