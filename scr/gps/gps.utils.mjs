@@ -7,7 +7,6 @@ export async function fetchDevicePosition(deviceId) {
       method: 'GET',
       headers: {
         Authorization: `bearer ${process.env.GPS_API_BEARER}`,
-        Cookie: `JSESSIONID=${process.env.GPS_API_COOKIE}`,
       },
     }
   );
