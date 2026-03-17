@@ -6,7 +6,7 @@ const bitrix = Bitrix(
 export async function listCars() {
   const response = await bitrix.list('crm.item.list', {
     entityTypeId: '138',
-    select: ['ufCrm4_1654801473656', 'ID', 'ufCrm4_1654801619341'],
+    select: ['ufCrm4_1654801473656', 'ID', 'ufCrm4_1654801619341','ufCrm4_1773310945'],
   });
   const { result } = response;
   return result;
